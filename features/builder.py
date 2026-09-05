@@ -288,13 +288,22 @@ class FeatureBuilder:
         items = items.sort_values(
             ["order_id", "order_item_id"], kind="mergesort"
         )
+        items = items.assign(
+            _price_cents=np.rint(items["price"].to_numpy(dtype=float) * 100).astype(
+                "int64"
+            ),
+            _freight_cents=np.rint(
+                items["freight_value"].to_numpy(dtype=float) * 100
+            ).astype("int64"),
+        )
         agg = items.groupby("order_id").agg(
-            order_value=("price", "sum"),
-            order_freight=("freight_value", "sum"),
+            order_value=("_price_cents", "sum"),
+            order_freight=("_freight_cents", "sum"),
             n_items=("order_item_id", "count"),
             n_sellers=("seller_id", "nunique"),
             n_products=("product_id", "nunique"),
         )
+        agg[["order_value", "order_freight"]] /= 100
         # Force float64 regardless of population. A left merge yields int64 when every
         # order in the population happens to join and float64 when any does not, so
         # the dtype would otherwise depend on which rows are being scored - a serving
@@ -335,11 +344,17 @@ class FeatureBuilder:
         payments = payments.sort_values(
             ["order_id", "payment_sequential"], kind="mergesort"
         )
+        payments = payments.assign(
+            _payment_cents=np.rint(
+                payments["payment_value"].to_numpy(dtype=float) * 100
+            ).astype("int64")
+        )
         pay = payments.groupby("order_id").agg(
-            payment_value=("payment_value", "sum"),
+            payment_value=("_payment_cents", "sum"),
             payment_installments=("payment_installments", "max"),
             n_payment_types=("payment_type", "nunique"),
         )
+        pay["payment_value"] /= 100
         pay["is_boleto"] = (
             payments[payments["payment_type"] == "boleto"]
             .groupby("order_id")
