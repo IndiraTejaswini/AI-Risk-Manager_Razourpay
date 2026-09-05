@@ -1,0 +1,61 @@
+# Pinned per ARCHITECTURE.md section 11.3.
+# Covers the loader, feature builder, model, analysis scripts, and test suite.
+kagglehub==1.0.2
+numpy==2.5.2
+pandas==3.0.5
+python-dateutil==2.9.0.post0
+requests==2.34.2
+tqdm==4.70.0
+tzdata==2026.3
+pyarrow==25.0.1
+
+# Model
+lightgbm==4.7.0
+scikit-learn==1.9.0
+scipy==1.18.1
+joblib==1.6.0
+threadpoolctl==3.6.0
+
+# Explainability
+shap==0.52.0
+slicer==0.0.8
+numba==0.67.0
+llvmlite==0.49.0
+cloudpickle==3.1.2
+
+# Figures
+matplotlib==3.11.1
+contourpy==1.3.3
+cycler==0.12.1
+fonttools==4.64.0
+kiwisolver==1.5.1
+pillow==12.3.0
+pyparsing==3.3.2
+
+# Serving
+fastapi==0.141.1
+uvicorn==0.52.4
+starlette==1.6.0
+pydantic==2.13.5
+annotated-types==0.8.0
+typing-inspection==0.4.4
+anyio==4.14.2
+sniffio==1.3.1
+h11==0.16.0
+httptools==0.8.0
+click==8.5.0
+colorama==0.4.6
+python-dotenv==1.2.3
+PyYAML==6.0.3
+watchfiles==1.2.0
+websockets==17.1
+idna==3.19
+
+# Tests
+pytest==9.1.1
+iniconfig==2.3.0
+packaging==26.3
+pluggy==1.6.0
+httpx==0.28.1
+httpcore==1.0.9
+certifi==2026.7.22

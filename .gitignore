@@ -1,0 +1,47 @@
+# Virtual environment
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Data — Olist is fetched via kagglehub into its own cache, never vendored.
+# Checksums of the files actually read are recorded in eval/positive_counts.md.
+data/raw/
+data/cache/
+*.csv
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Regenerable outputs (deterministic; rebuild with scripts/03_feature_matrix.py)
+artifacts/
+
+# Environment variables & secrets
+.env
+.env.*
+*.env
+*.key
+*.pem
+secrets/
+credentials.json
+
+# Python virtual environments & bytecode
+.venv/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+*.class
+
+# Testing & build caches
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/

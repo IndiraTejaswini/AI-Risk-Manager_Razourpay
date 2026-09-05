@@ -1,0 +1,19 @@
+{
+  "cost_breakdown": {
+    "basis": "assumed_cost_constants",
+    "currency": "BRL",
+    "expected_rto_loss": 19.14745,
+    "expected_triggered_cost": 0.4748000000000001,
+    "impression_cost": 0.8
+  },
+  "features_missing": 3,
+  "model_version": "rto-label_b-6c0f21786683",
+  "reasons": [
+    "This product category has an elevated failure rate.",
+    "Ordered in a period with an elevated failure rate.",
+    "This order contains an unusual number of items."
+  ],
+  "risk": 0.011832507605654664,
+  "threshold_used": 0.06496706544866161,
+  "tier": "allow"
+}

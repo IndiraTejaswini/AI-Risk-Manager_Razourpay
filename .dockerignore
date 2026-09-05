@@ -1,0 +1,29 @@
+﻿# Everything the image does not need. Keeps the build context small and stops local
+# state (a venv, a 5MB parquet, model artifacts) from leaking into the layer cache.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+artifacts/
+docs/
+tests/
+scripts/
+.github/
+
+# Ignore heavy markdown reports and figures, keep json configs (TIER1_LOCK.json)
+eval/*.md
+eval/*.py
+eval/figures/
+eval/responder/
+
+*.csv
+*.parquet
+
+.git/
+.gitignore
+ARCHITECTURE.md
+README.md
+Dockerfile
+.dockerignore

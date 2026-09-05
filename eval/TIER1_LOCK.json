@@ -1,0 +1,108 @@
+{
+  "lock_version": 2,
+  "metadata": {
+    "captured_at": "2026-09-04T15:59:25Z",
+    "git_sha": "b1b4ca51a29dfa833f01b9fdbc051f9ecc74ce37",
+    "model_version": "rto-label_b-6c0f21786683",
+    "generator": "scripts/90_capture_tier1_lock.py"
+  },
+  "targets": {
+    "primary": {
+      "label": "b",
+      "population": "risk_set",
+      "dataset": {
+        "test_rows": 19662,
+        "test_positives": 154,
+        "test_prevalence": 0.007832367002339538
+      },
+      "resolution": {
+        "mdd_ap": 0.043,
+        "mdd_superseded_by": "eval/significance.md §6 — MDD assumed AP ~0.10 against a realised ~0.02, so it was 3.5x too pessimistic here",
+        "paired_bootstrap_delta": 0.0093,
+        "paired_bootstrap_ci": [
+          0.0034,
+          0.0279
+        ],
+        "permutation_p": 0.0006,
+        "permutation_null_p99": 0.012626
+      },
+      "performance": {
+        "average_precision": 0.0171,
+        "roc_auc": 0.645,
+        "brier": 0.0077613,
+        "smece": 0.00251,
+        "top_decile_calibration_gap": 0.004197
+      },
+      "operating_points": {
+        "elkan_policy": {
+          "precision": 0.058823529411764705,
+          "recall": 0.012987012987012988,
+          "treated_frac": 0.0017292238836334045
+        },
+        "top_1pct": {
+          "precision": 0.0305,
+          "recall": 0.039
+        },
+        "top_5pct": {
+          "precision": 0.014199999999999999,
+          "recall": 0.0909
+        }
+      }
+    },
+    "secondary": {
+      "label": "a",
+      "population": "all_matured",
+      "dataset": {
+        "test_rows": 19887,
+        "test_positives": 379,
+        "test_prevalence": 0.019057675868657916
+      },
+      "resolution": {
+        "mdd_ap": 0.027
+      },
+      "performance": {
+        "average_precision": 0.2938
+      }
+    }
+  },
+  "policy": {
+    "four_row_table": {
+      "nothing": {
+        "cost": 8613.13,
+        "ci_low": 7029.29,
+        "ci_high": 10546.5
+      },
+      "everything": {
+        "cost": 87881.68,
+        "ci_low": 85781.02,
+        "ci_high": 90166.87
+      },
+      "hand_rule": {
+        "cost": 40839.15,
+        "ci_low": 38489.62,
+        "ci_high": 43429.66
+      },
+      "model": {
+        "cost": 8467.61,
+        "ci_low": 7023.71,
+        "ci_high": 10186.94
+      }
+    }
+  },
+  "explainability": {
+    "shap_additivity_max_abs_error": 7.105e-15,
+    "shap_pred_contrib_agreement": 0.0
+  },
+  "latency": {
+    "p50_ms": 322.1,
+    "p99_ms": 374.5,
+    "verdict_pass_ms": 326.4,
+    "protocol": "worst-of-three-passes"
+  },
+  "integrity": {
+    "cost_constants_sha256": "417f258396e86817e0930459ac08c2d3063536738829f42c06dc2043db1373f9",
+    "elkan_thresholds_sha256": "1b11b860a521dbd8c794b134260bc656e11a949c84ca07d4b6a2e4a6857d83d2",
+    "feature_order_sha256": "2baea2a080426c1fff9195c393b0819cffd8b7de16ed14de3d5e88cd2713e94a"
+  },
+  "not_computed": []
+}

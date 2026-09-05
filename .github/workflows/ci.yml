@@ -1,0 +1,120 @@
+name: CI
+
+# The green badge is the signal: the test suite pins every number that appears in an
+# eval/ report, so a change that moves one fails here rather than quietly rewriting a
+# markdown file.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Test suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # The dataset is ~43MB and is not vendored. kagglehub serves this dataset
+      # anonymously, so no credentials are needed; caching it keeps the run off
+      # Kaggle's servers on every push and makes the job reproducible if the
+      # dataset is ever re-versioned.
+      - name: Cache Olist dataset
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/kagglehub
+          key: olist-brazilian-ecommerce-v2
+
+      - name: Fetch dataset if not cached
+        run: |
+          python -c "import kagglehub; print(kagglehub.dataset_download('olistbr/brazilian-ecommerce'))"
+
+      - name: Run tests
+        # -p no:cacheprovider: the run is ephemeral, and the cache dir is one more
+        # thing to invalidate for no benefit.
+        run: make test
+
+      # `make` does not exist on the Windows host this was developed on, so the target
+      # is exercised here. `make all` regenerates every eval/ artifact from raw data;
+      # the diff check then asserts the pipeline is deterministic - only the generation
+      # timestamps and the wall-clock latency report may move.
+      - name: make all regenerates the artifacts
+        run: make all
+
+      - name: Artifacts are deterministic
+        run: |
+          set -e
+          DRIFT=0
+          for f in eval/*.md; do
+            if [ "$f" = "eval/latency.md" ]; then continue; fi
+            if ! git diff --quiet -- "$f"; then
+              CHANGED=$(git diff --no-color -- "$f" | grep -E '^[+-]'                         | grep -vE '^(\+\+\+|---)' | grep -v 'Generated (UTC)' || true)
+              if [ -n "$CHANGED" ]; then
+                echo "::error file=$f::regenerated content differs beyond the timestamp"
+                echo "$CHANGED"
+                DRIFT=1
+              fi
+            fi
+          done
+          if ! git diff --quiet -- eval/figures/; then
+            echo "::error::a figure changed on regeneration"
+            DRIFT=1
+          fi
+          if [ "$DRIFT" -eq 0 ]; then
+            echo "All reports and figures reproduced byte-for-byte (eval/latency.md is"
+            echo "a wall-clock measurement and is excluded by design)."
+          fi
+          exit $DRIFT
+
+  docker:
+    name: Docker build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: rto-detector:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # A build that succeeds and an image that cannot start are different things.
+      # The container needs the dataset at runtime, so this checks the failure mode a
+      # judge without network would hit rather than pretending the image is
+      # self-contained.
+      - name: Image starts and imports the serving stack
+        run: |
+          docker run --rm --entrypoint python rto-detector:ci -c "
+          import api.main, api.service, api.contract
+          from features.store import HistoryStore
+          print('serving stack imports OK')
+          "
+
+      - name: Report image size
+        run: docker images rto-detector:ci --format '{{.Repository}}:{{.Tag}} {{.Size}}'
