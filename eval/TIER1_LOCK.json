@@ -1,8 +1,8 @@
 {
   "lock_version": 2,
   "metadata": {
-    "captured_at": "2026-09-04T15:59:25Z",
-    "git_sha": "b1b4ca51a29dfa833f01b9fdbc051f9ecc74ce37",
+    "captured_at": "2026-09-05T18:29:32Z",
+    "git_sha": "454b6d5a81062687872a0e671e12a890f6d1ff44",
     "model_version": "rto-label_b-6c0f21786683",
     "generator": "scripts/90_capture_tier1_lock.py"
   },
@@ -94,9 +94,9 @@
     "shap_pred_contrib_agreement": 0.0
   },
   "latency": {
-    "p50_ms": 322.1,
-    "p99_ms": 374.5,
-    "verdict_pass_ms": 326.4,
+    "p50_ms": 125.3,
+    "p99_ms": 140.6,
+    "verdict_pass_ms": 125.4,
     "protocol": "worst-of-three-passes"
   },
   "integrity": {
