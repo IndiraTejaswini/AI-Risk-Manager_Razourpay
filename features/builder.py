@@ -285,6 +285,9 @@ class FeatureBuilder:
         items = self.loader.load_table("items")
         if len(order_ids) * 4 < len(items):
             items = items[items["order_id"].isin(order_ids)]
+        items = items.sort_values(
+            ["order_id", "order_item_id"], kind="mergesort"
+        )
         agg = items.groupby("order_id").agg(
             order_value=("price", "sum"),
             order_freight=("freight_value", "sum"),
@@ -329,6 +332,9 @@ class FeatureBuilder:
         payments = self.loader.load_table("payments")
         if len(order_ids) * 4 < len(payments):
             payments = payments[payments["order_id"].isin(order_ids)]
+        payments = payments.sort_values(
+            ["order_id", "payment_sequential"], kind="mergesort"
+        )
         pay = payments.groupby("order_id").agg(
             payment_value=("payment_value", "sum"),
             payment_installments=("payment_installments", "max"),
