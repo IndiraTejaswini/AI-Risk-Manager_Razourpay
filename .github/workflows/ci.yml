@@ -66,7 +66,7 @@ jobs:
           for f in eval/*.md; do
             if [ "$f" = "eval/latency.md" ]; then continue; fi
             if ! git diff --quiet --ignore-space-at-eol -- "$f"; then
-              CHANGED=$(git diff --no-color --ignore-space-at-eol -- "$f" | grep -E '^[+-]'                         | grep -vE '^(\+\+\+|---)' | grep -v 'Generated (UTC)' || true)
+              CHANGED=$(git diff --no-color --ignore-space-at-eol -- "$f" | grep -E '^[+-]'                         | grep -vE '^(\+\+\+|---)' | grep -vE 'Generated \(UTC\)|Run: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} UTC' || true)
               if [ -n "$CHANGED" ]; then
                 echo "::error file=$f::regenerated content differs beyond the timestamp"
                 echo "$CHANGED"
